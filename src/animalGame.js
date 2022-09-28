@@ -1,0 +1,167 @@
+import { createElement, useEffect, useRef, useState } from 'react';
+import './App.css';
+import bird from './images/Bird.png'
+import cat from './images/Cat 1.png'
+import chicken from './images/Chicken (2).png'
+import cow from './images/Cow.png'
+import elephant from './images/Elephant.png'
+import frog from './images/Frog.png'
+import horse from'./images/Horse.png'
+import lion from './images/Lion.png'
+import monkey from './images/Monkey.png'
+import penguin from './images/Penguin.png'
+import pig from './images/Pig (2).png'
+import pocketPurse from './images/Pocket Purse.png'
+import bloop from './audio/Cartoon Accent.mp3'
+import fail from './audio/Fail 2.mp3'
+import cheering from './audio/Kids Cheering.mp3'
+import singing from './audio/Lucy Lockey Game Audio.mp3'
+
+let bloopSound = new Audio(bloop)
+let failSound = new Audio(fail)
+let cheeringSound = new Audio(cheering)
+let singingSound = new Audio(singing)
+
+function AnimalGame() {
+  
+  const ref = useRef(null)
+  
+  let title = 'find the purse'
+  let playing = true;
+  let gameOver = false;
+  let grid = []
+  let animals = []
+  let count = 0
+
+  const triggered = useRef(true)
+  useEffect(() => {
+    if(triggered.current){
+      triggered.current = false;
+      createGrid()
+      placeAnimals()
+      placePurse()
+    }
+  }, [])
+  
+  
+  const animalImages = [
+    bird,
+    cat,
+    chicken,
+    cow,
+    elephant,
+    frog,
+    horse,
+    lion,
+    monkey,
+    pig,
+    penguin
+  ]
+
+  const purse = pocketPurse
+  
+
+  function createGrid() {
+    for (let i = 0; i < 7; i++){
+      for (let j = 0; j < 4; j++) {
+        let newDiv = document.createElement('div')
+        newDiv.classList.add('grid');
+        let container = document.getElementById('container')
+        container.appendChild(newDiv)
+        grid.push({position: [i,j], reference: newDiv, filled: false})
+      }
+    }
+  }
+
+  function placeAnimals() {
+    animalImages.forEach(checkPlacement)
+  }
+
+  function checkPlacement(animal){
+    let position = Math.floor(Math.random() * grid.length)
+      let img = document.createElement('img')
+      img.src = animal
+      img.classList.add('imgSize')
+  
+      if(grid[position].filled ) {
+        checkPlacement(animal)
+        return
+      }
+      grid[position].filled = true;
+      grid[position].reference.appendChild(img)
+      animals.push(grid[position].reference)
+
+      grid[position].reference.addEventListener('click', function handleClick(event) {
+        if(playing){
+          count++
+          if(grid[position].reference.children[1]){
+            document.getElementsByClassName('purseSize')[0].classList.toggle("is-active")
+            bloopSound.play()
+            setTimeout(function(){cheeringSound.play()},800)
+            endGame()
+          } else {
+            bloopSound.play()
+            setTimeout(function(){failSound.play()},800)
+            if(count === 2){
+              count = 0
+              setTimeout(function(){singingSound.play()},4000)
+            }
+          }
+          
+          console.log(grid[position].reference.children[0])
+          grid[position].reference.children[0].style.opacity = .2;
+        
+      }
+      });
+  }
+
+  function placePurse() {
+    let placement = Math.floor(Math.random() * animals.length)
+    let img = document.createElement('img')
+      img.src = purse
+      img.classList.add('purseSize')
+    animals[placement].append(img)
+  }
+
+  function endGame() {
+    title = 'congrats'
+    playing = false
+    gameOver = true
+  }
+
+  function deleteAnimalsAndPurseAndGrid(){
+    grid.forEach(grid => {
+      grid.filled = false
+      console.log(grid.reference.children[1])
+      if(grid.reference.children[1]){
+        console.log("here")
+        grid.reference.children[1].remove()
+        }
+      if(grid.reference.children[0]){
+        grid.reference.children[0].remove()
+      }
+    })
+     
+  }
+
+  function restartGame() {
+      deleteAnimalsAndPurseAndGrid()
+      placeAnimals()
+      placePurse()
+      playing = true
+      gameOver = false
+  }
+ console.log(grid)
+ 
+  return (
+    <div className='centered'>
+      <h1>{title}</h1>
+      <h1 onClick={restartGame}>play again?</h1>
+      <div ref={ref} id='container' className='centered'>
+      </div>
+    </div>
+  );
+ 
+}
+
+export default AnimalGame;
