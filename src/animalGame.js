@@ -1,4 +1,5 @@
 import { createElement, useEffect, useRef, useState } from 'react';
+import VolumeSlider from './volumeSlider';
 import './App.css';
 import bird from './images/Bird.png'
 import cat from './images/Cat 1.png'
@@ -16,19 +17,19 @@ import bloop from './audio/Cartoon Accent.mp3'
 import fail from './audio/Fail 2.mp3'
 import cheering from './audio/Kids Cheering.mp3'
 import singing from './audio/Lucy Lockey Game Audio.mp3'
+import Title from './title';
 
 let bloopSound = new Audio(bloop)
 let failSound = new Audio(fail)
 let cheeringSound = new Audio(cheering)
 let singingSound = new Audio(singing)
 
+const allSounds = [bloopSound, failSound, cheeringSound, singingSound]
+
 function AnimalGame() {
   
-  const ref = useRef(null)
-  
-  let title = 'find the purse'
+  const title1 = useRef();
   let playing = true;
-  let gameOver = false;
   let grid = []
   let animals = []
   let count = 0
@@ -40,6 +41,7 @@ function AnimalGame() {
       createGrid()
       placeAnimals()
       placePurse()
+      setVolume(.1)
     }
   }, [])
   
@@ -124,12 +126,12 @@ function AnimalGame() {
   }
 
   function endGame() {
-    title = 'congrats'
     playing = false
-    gameOver = true
+    title1.current.changeTitle(playing)
   }
 
   function deleteAnimalsAndPurseAndGrid(){
+    count = 0
     grid.forEach(grid => {
       grid.filled = false
       console.log(grid.reference.children[1])
@@ -141,24 +143,42 @@ function AnimalGame() {
         grid.reference.children[0].remove()
       }
     })
-     
   }
-
+  
   function restartGame() {
       deleteAnimalsAndPurseAndGrid()
+      stopAllSounds()
       placeAnimals()
       placePurse()
       playing = true
-      gameOver = false
   }
  console.log(grid)
- 
+
+ function setVolume(volume) {
+  if(volume){
+    console.log(volume)
+    if(volume < 0.04){
+      allSounds.forEach(sound => sound.volume = 0 )
+      return
+    }
+    allSounds.forEach(sound => sound.volume = volume )
+  }
+}
+
+function stopAllSounds() {
+  allSounds.forEach(sound => {
+     sound.pause()
+     sound.currentTime = 0
+  })
+}
+
   return (
     <div className='centered'>
-      <h1>{title}</h1>
+      <Title playing={playing} ref={title1}/>
       <h1 onClick={restartGame}>play again?</h1>
-      <div ref={ref} id='container' className='centered'>
+      <div id='container' className='centered'>
       </div>
+      <VolumeSlider setVolume={setVolume}/>
     </div>
   );
  

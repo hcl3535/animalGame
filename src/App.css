@@ -57,4 +57,11 @@ html{
     opacity: 1;
   }
 }
+.volumeContainer{
+  display: flex;
+  float: right;
+}
 
+.volumeIcon {
+  height: 3vh;
+}
