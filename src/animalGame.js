@@ -151,6 +151,7 @@ function AnimalGame() {
       placeAnimals()
       placePurse()
       playing = true
+      title1.current.changeTitle(playing)
   }
  console.log(grid)
 
