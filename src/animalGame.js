@@ -162,6 +162,7 @@ function AnimalGame() {
   function restartGame() {
       deleteAnimalsAndPurseAndGrid()
       animals = []
+      count = 0
       stopAllSounds()
       placeAnimals()
       placePurse()
