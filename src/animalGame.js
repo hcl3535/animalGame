@@ -136,7 +136,6 @@ function AnimalGame() {
     let img = document.createElement('img')
     img.src = purse
     img.classList.add('purseSize')
-    img.classList.add('centered')
     animals[placement].append(img)
   }
 
