@@ -12,6 +12,10 @@ html{
 .grid {
   /* border: 2px solid black; */
   height:16vh;
+  display: flex;
+  text-align: center;
+    align-self: center;
+    justify-content: center;
 }
 
 .offsetLeft {
@@ -33,7 +37,6 @@ html{
 .imgSize {
   /* width: 11vw; */
   height: 16vh;
-  padding: 1vh 0;
 }
 
 .purseSize {
