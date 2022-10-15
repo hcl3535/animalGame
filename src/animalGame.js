@@ -72,7 +72,7 @@ function AnimalGame() {
         if(i % 2 !== 0) newDiv.classList.add('offsetRight');
         let container = document.getElementById('container')
         container.appendChild(newDiv)
-        grid.push({position: [i,j], reference: newDiv, filled: false})
+        grid.push({position: [i,j], reference: newDiv, filled: false, clicked: false})
       }
     }
   }
@@ -97,15 +97,19 @@ function AnimalGame() {
 
       grid[position].reference.addEventListener('click', function handleClick(event) {
         if(playing){
-          count++
-          if(grid[position].reference.children[1]){
-            foundPurse()
-          } else {
-            didntFindPurse()
-          }
-          console.log(grid[position].reference.children[0])
-          grid[position].reference.children[0].style.opacity = .2;
+          if(grid[position].clicked === false){
+            grid[position].clicked = true
+            count++
+            console.log(count)
+            if(grid[position].reference.children[1]){
+              foundPurse()
+            } else {
+              didntFindPurse()
+            }
+            console.log(grid[position].reference.children[0])
+            grid[position].reference.children[0].style.opacity = .2;
         
+        }
       }
       });
   }
@@ -132,13 +136,12 @@ function AnimalGame() {
     let img = document.createElement('img')
     img.src = purse
     img.classList.add('purseSize')
-    console.log(placement)
-    console.log(animals)
     animals[placement].append(img)
   }
 
   function endGame() {
     playing = false
+    count = 0
     title1.current.changeTitle(playing)
     clearAllTimeouts()
   }
@@ -150,9 +153,9 @@ function AnimalGame() {
     }
   }
   function deleteAnimalsAndPurseAndGrid(){
-    count = 0
     grid.forEach(grid => {
       grid.filled = false
+      grid.clicked = false
       console.log(grid.reference.children[1])
       if(grid.reference.children[1]) grid.reference.children[1].remove()
       if(grid.reference.children[0]) grid.reference.children[0].remove()
@@ -163,6 +166,7 @@ function AnimalGame() {
       deleteAnimalsAndPurseAndGrid()
       animals = []
       count = 0
+      console.log(count)
       stopAllSounds()
       placeAnimals()
       placePurse()
@@ -173,7 +177,6 @@ function AnimalGame() {
 
  function setVolume(volume) {
   if(volume){
-    console.log(volume)
     if(volume < 0.04){
       allSounds.forEach(sound => sound.volume = 0 )
       return
