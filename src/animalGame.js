@@ -30,9 +30,9 @@ function AnimalGame() {
   
   const title1 = useRef();
   let playing = true;
-  let grid = []
-  let animals = []
-  let count = 0
+  let grid = [];
+  let animals = [];
+  let count = 0;
 
   const triggered = useRef(true)
   useEffect(() => {
@@ -64,10 +64,12 @@ function AnimalGame() {
   
 
   function createGrid() {
-    for (let i = 0; i < 7; i++){
-      for (let j = 0; j < 4; j++) {
+    for (let i = 0; i < 4; i++){
+      for (let j = 0; j < 7; j++) {
         let newDiv = document.createElement('div')
         newDiv.classList.add('grid');
+        if(i % 2 === 0) newDiv.classList.add('offsetLeft');
+        if(i % 2 !== 0) newDiv.classList.add('offsetRight');
         let container = document.getElementById('container')
         container.appendChild(newDiv)
         grid.push({position: [i,j], reference: newDiv, filled: false})
@@ -97,19 +99,10 @@ function AnimalGame() {
         if(playing){
           count++
           if(grid[position].reference.children[1]){
-            document.getElementsByClassName('purseSize')[0].classList.toggle("is-active")
-            bloopSound.play()
-            setTimeout(function(){cheeringSound.play()},800)
-            endGame()
+            foundPurse()
           } else {
-            bloopSound.play()
-            setTimeout(function(){failSound.play()},800)
-            if(count === 2){
-              count = 0
-              setTimeout(function(){singingSound.play()},4000)
-            }
+            didntFindPurse()
           }
-          
           console.log(grid[position].reference.children[0])
           grid[position].reference.children[0].style.opacity = .2;
         
@@ -117,36 +110,58 @@ function AnimalGame() {
       });
   }
 
+  function foundPurse(){
+    document.getElementsByClassName('purseSize')[0].classList.toggle("is-active")
+    stopAllSounds()
+    bloopSound.play()
+    endGame()
+    setTimeout(function(){cheeringSound.play()},400)
+  }
+
+  function didntFindPurse() {
+    bloopSound.play()
+    setTimeout(function(){failSound.play()},500)
+    if(count === 2){
+      count = 0
+      setTimeout(function(){singingSound.play()},4000)
+    }
+  }
+
   function placePurse() {
     let placement = Math.floor(Math.random() * animals.length)
     let img = document.createElement('img')
-      img.src = purse
-      img.classList.add('purseSize')
+    img.src = purse
+    img.classList.add('purseSize')
+    console.log(placement)
+    console.log(animals)
     animals[placement].append(img)
   }
 
   function endGame() {
     playing = false
     title1.current.changeTitle(playing)
+    clearAllTimeouts()
   }
 
+  function clearAllTimeouts() {
+    let highestTimeoutId = setTimeout(";");
+    for (var i = 0 ; i < highestTimeoutId ; i++) {
+    clearTimeout(i); 
+    }
+  }
   function deleteAnimalsAndPurseAndGrid(){
     count = 0
     grid.forEach(grid => {
       grid.filled = false
       console.log(grid.reference.children[1])
-      if(grid.reference.children[1]){
-        console.log("here")
-        grid.reference.children[1].remove()
-        }
-      if(grid.reference.children[0]){
-        grid.reference.children[0].remove()
-      }
+      if(grid.reference.children[1]) grid.reference.children[1].remove()
+      if(grid.reference.children[0]) grid.reference.children[0].remove()
     })
   }
   
   function restartGame() {
       deleteAnimalsAndPurseAndGrid()
+      animals = []
       stopAllSounds()
       placeAnimals()
       placePurse()
