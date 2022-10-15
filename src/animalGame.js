@@ -41,7 +41,7 @@ function AnimalGame() {
       createGrid()
       placeAnimals()
       placePurse()
-      setVolume(.1)
+      setVolume(.5)
     }
   }, [])
   

@@ -13,7 +13,7 @@ function VolumeSlider({setVolume}){
   let singingSound = new Audio(singing)
 
   const allSounds = [bloopSound, failSound, cheeringSound, singingSound]
-  const [currentVolume, setCurrentVolume] = useState(.1)
+  const [currentVolume, setCurrentVolume] = useState(.5)
   
   
 
