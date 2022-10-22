@@ -62,7 +62,7 @@ function AnimalGame() {
 
   const purse = pocketPurse
   
-
+//creates Grid for all logic
   function createGrid() {
     for (let i = 0; i < 4; i++){
       for (let j = 0; j < 7; j++) {
@@ -77,6 +77,8 @@ function AnimalGame() {
     }
   }
 
+  //finds location and verifies its a valid spot to place
+  //animal on grid
   function placeAnimals() {
     animalImages.forEach(checkPlacement)
   }
@@ -94,7 +96,8 @@ function AnimalGame() {
       grid[position].filled = true;
       grid[position].reference.appendChild(img)
       animals.push(grid[position].reference)
-
+      
+      //handles chen you click an aninmal
       grid[position].reference.addEventListener('click', function handleClick(event) {
         if(playing){
           if(grid[position].clicked === false){
@@ -114,6 +117,7 @@ function AnimalGame() {
       });
   }
 
+  //when you click on the animal that has the purse
   function foundPurse(){
     document.getElementsByClassName('purseSize')[0].classList.toggle("is-active")
     stopAllSounds()
@@ -122,6 +126,7 @@ function AnimalGame() {
     setTimeout(function(){cheeringSound.play()},400)
   }
 
+  //when you click animal that doesent have the purse
   function didntFindPurse() {
     bloopSound.play()
     setTimeout(function(){failSound.play()},500)
@@ -131,6 +136,8 @@ function AnimalGame() {
     }
   }
 
+  //finds and places the purse on a valid grid spot
+  //with an animal 
   function placePurse() {
     let placement = Math.floor(Math.random() * animals.length)
     let img = document.createElement('img')
@@ -139,6 +146,7 @@ function AnimalGame() {
     animals[placement].append(img)
   }
 
+  //triggers when you find purse
   function endGame() {
     playing = false
     count = 0
@@ -146,12 +154,15 @@ function AnimalGame() {
     clearAllTimeouts()
   }
 
+  //clears all awaiting timers(sounds in this case)
   function clearAllTimeouts() {
     let highestTimeoutId = setTimeout(";");
     for (var i = 0 ; i < highestTimeoutId ; i++) {
     clearTimeout(i); 
     }
   }
+
+  //resets the grid for new game when you click restart game
   function deleteAnimalsAndPurseAndGrid(){
     grid.forEach(grid => {
       grid.filled = false
@@ -162,6 +173,7 @@ function AnimalGame() {
     })
   }
   
+  //handles restarting game
   function restartGame() {
       deleteAnimalsAndPurseAndGrid()
       animals = []
@@ -175,6 +187,7 @@ function AnimalGame() {
   }
  console.log(grid)
 
+ //handles volume control
  function setVolume(volume) {
   if(volume){
     if(volume < 0.04){
@@ -185,6 +198,7 @@ function AnimalGame() {
   }
 }
 
+//resets sounds to begging of mp3
 function stopAllSounds() {
   allSounds.forEach(sound => {
      sound.pause()
@@ -195,7 +209,7 @@ function stopAllSounds() {
   return (
     <div className='centered'>
       <Title playing={playing} ref={title1}/>
-      <h1 onClick={restartGame}>play again?</h1>
+      <h1 onClick={restartGame} className='grayHover'>play again?</h1>
       <div id='container' className='centered'>
       </div>
       <VolumeSlider setVolume={setVolume}/>
