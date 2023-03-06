@@ -1,4 +1,4 @@
-import { createElement, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef} from 'react';
 import VolumeSlider from './volumeSlider';
 import './App.css';
 import bird from './images/Bird.png'
